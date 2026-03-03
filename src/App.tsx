@@ -88,6 +88,7 @@ function App() {
             Petrik weboldal
           </Nav.Link>
           <Nav.Link href="#new">Új tanóra felvétele</Nav.Link>
+          <Nav.Link href="#kapcsolat">Kapcsolat</Nav.Link>
         </Nav>
       </header>
       <main>
@@ -176,7 +177,7 @@ function App() {
         </section>
       </main>
       <br />
-      <footer>
+      <footer id="kapcsolat">
         <p>
           <b>Oldalt készítette: </b>Yamakawa Kende <br />
           <i>Oldal készült: </i>2026.03.02
