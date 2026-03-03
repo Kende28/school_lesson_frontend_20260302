@@ -9,6 +9,7 @@ interface Lesson {
   class_level: string;
   scheduled_hours: number;
 }
+
 function App() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [lessonForm, setLessonForm] = useState({
@@ -45,6 +46,7 @@ function App() {
       if (!res.ok) {
         alert("Hiba történt a tanóra felvétele közben");
       } else {
+        alert("sikeres felvétel");
         setLessonForm({
           subject: "",
           teacher: "",
@@ -52,6 +54,21 @@ function App() {
           scheduled_hours: 0,
         });
         fetchLessons();
+      }
+    } catch (error) {
+      alert("Szerver hiba: " + error);
+    }
+  };
+
+  const handleConduct = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3000/lessons/${id}/conducted`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        alert(res.status + ": Hiba történt a megtartott tanóra rögzítése közben");
+      } else {
+        alert(res.status + ": Megtartott óra sikeresen rögzítve");
       }
     } catch (error) {
       alert("Szerver hiba: " + error);
@@ -76,14 +93,16 @@ function App() {
       <main>
         <section className="container-fluid">
           <Row xs={1} md={2} xl={4}>
-            {lessons.map((lesson, id) => (
-              <Card key={id} className=" mb-2">
+            {lessons.map((lesson) => (
+              <Card key={lesson.id} className=" mb-2">
                 <Card.Body>
                   <Col>
                     <table>
                       <tbody>
                         <tr>
-                          <td><h2>{lesson.subject}</h2></td>
+                          <td>
+                            <h2>{lesson.subject}</h2>
+                          </td>
                           <td>{lesson.class_level}</td>
                           <td>{lesson.teacher}</td>
                           <td>{lesson.scheduled_hours} perc</td>
@@ -92,13 +111,16 @@ function App() {
                     </table>
                   </Col>
                 </Card.Body>
-                <Button>Megtartva</Button>
+                <Button onClick={() => handleConduct(lesson.id)}>
+                  Megtartva
+                </Button>
               </Card>
             ))}
           </Row>
         </section>
         <br />
         <section className="container-fluid" id="new">
+          <h2>Új tanóra felvétele</h2>
           <Row xs={1} md={2} xl={3}>
             <Form onSubmit={() => handleSubmit}>
               <Form.Group>
@@ -148,9 +170,7 @@ function App() {
                 />
               </Form.Group>
               <br />
-              <Form.Group>
-                <Button type="submit">Új tanóra felvétele</Button>
-              </Form.Group>
+              <Button type="submit">Új tanóra felvétele</Button>
             </Form>
           </Row>
         </section>
